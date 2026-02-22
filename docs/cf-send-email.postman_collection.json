@@ -1,0 +1,234 @@
+{
+  "info": {
+    "name": "cf-send-email",
+    "description": "Cloud Function email dispatcher — SendGrid, AWS SES, and Brevo providers.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "emailTo",
+      "value": "recipient@example.com",
+      "type": "string"
+    },
+    {
+      "key": "emailFrom",
+      "value": "sender@yourdomain.com",
+      "type": "string"
+    },
+    {
+      "key": "emailSubject",
+      "value": "Hello from cf-send-email",
+      "type": "string"
+    },
+    {
+      "key": "emailBody",
+      "value": "<h1>Hello!</h1><p>This is a test email sent via cf-send-email.</p>",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"status\": \"ok\",\n  \"timestamp\": \"2025-01-01T00:00:00.000Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Send Email",
+      "item": [
+        {
+          "name": "Send via SendGrid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"to\": \"{{emailTo}}\",\n  \"from\": \"{{emailFrom}}\",\n  \"subject\": \"{{emailSubject}}\",\n  \"body\": \"{{emailBody}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/send/sendgrid",
+              "host": ["{{baseUrl}}"],
+              "path": ["send", "sendgrid"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"message\": \"Email sent successfully\"\n}"
+            },
+            {
+              "name": "400 Validation Error",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"error\": \"Request validation failed\",\n  \"fieldErrors\": {\n    \"to\": [\"Invalid recipient email address\"]\n  }\n}"
+            },
+            {
+              "name": "500 Provider Error",
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"error\": \"[sendgrid] Failed to send email via SendGrid\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Send via AWS SES",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"to\": \"{{emailTo}}\",\n  \"from\": \"{{emailFrom}}\",\n  \"subject\": \"{{emailSubject}}\",\n  \"body\": \"{{emailBody}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/send/aws",
+              "host": ["{{baseUrl}}"],
+              "path": ["send", "aws"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"message\": \"Email sent successfully\"\n}"
+            },
+            {
+              "name": "400 Validation Error",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"error\": \"Request validation failed\",\n  \"fieldErrors\": {\n    \"from\": [\"Invalid sender email address\"]\n  }\n}"
+            },
+            {
+              "name": "500 Provider Error",
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"error\": \"[aws] Failed to send email via AWS SES\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Send via Brevo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"to\": \"{{emailTo}}\",\n  \"from\": \"{{emailFrom}}\",\n  \"subject\": \"{{emailSubject}}\",\n  \"body\": \"{{emailBody}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/send/brevo",
+              "host": ["{{baseUrl}}"],
+              "path": ["send", "brevo"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"message\": \"Email sent successfully\"\n}"
+            },
+            {
+              "name": "400 Validation Error",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"error\": \"Request validation failed\",\n  \"fieldErrors\": {\n    \"subject\": [\"Subject cannot be empty\"]\n  }\n}"
+            },
+            {
+              "name": "500 Provider Error",
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"error\": \"[brevo] Failed to send email via Brevo\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
