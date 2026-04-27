@@ -1,0 +1,48 @@
+# Node
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output (rebuilt inside the image)
+dist
+coverage
+
+# Environment / secrets — never bake these into an image
+.env
+.env.*
+!.env.example
+
+# Tests & test config (production image doesn't need them)
+tests
+tsconfig.test.json
+jest.config.ts
+jest.config.js
+
+# Tooling configs not needed at runtime
+.eslintrc*
+.prettierrc*
+.editorconfig
+.nvmrc
+
+# VCS / CI
+.git
+.gitignore
+.gitattributes
+.github
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Docs / misc
+README.md
+*.md
+LICENSE
+
+# Docker itself
+Dockerfile
+.dockerignore
+docker-compose*.yml
