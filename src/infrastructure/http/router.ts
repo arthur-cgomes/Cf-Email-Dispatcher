@@ -35,16 +35,23 @@ export function buildRouter(env: AppEnv): Router {
   const sendGridUseCase = new SendEmailUseCase(sendGridProvider, logRepository, 'sendgrid');
   const sendGridController = new EmailController(sendGridUseCase);
 
-  const awsSesProvider = new AwsSesProvider(env.awsRegion);
-  const awsUseCase = new SendEmailUseCase(awsSesProvider, logRepository, 'aws');
-  const awsController = new EmailController(awsUseCase);
-
   const brevoProvider = new BrevoProvider(env.brevoApiKey);
   const brevoUseCase = new SendEmailUseCase(brevoProvider, logRepository, 'brevo');
   const brevoController = new EmailController(brevoUseCase);
 
   router.post('/send/sendgrid', (req, res) => sendGridController.handle(req, res));
-  router.post('/send/aws', (req, res) => awsController.handle(req, res));
+
+  if (env.awsRegion) {
+    const awsSesProvider = new AwsSesProvider(env.awsRegion);
+    const awsUseCase = new SendEmailUseCase(awsSesProvider, logRepository, 'aws');
+    const awsController = new EmailController(awsUseCase);
+    router.post('/send/aws', (req, res) => awsController.handle(req, res));
+  } else {
+    router.post('/send/aws', (_req, res) => {
+      res.status(503).json({ error: 'AWS SES provider is not configured.' });
+    });
+  }
+
   router.post('/send/brevo', (req, res) => brevoController.handle(req, res));
 
   return router;
