@@ -2,7 +2,7 @@ export interface AppEnv {
   port: number;
   nodeEnv: string;
   sendgridApiKey: string;
-  awsRegion: string;
+  awsRegion: string | undefined;
   brevoApiKey: string;
   databaseUrl: string;
   dbPoolMax: number;
@@ -34,7 +34,7 @@ export function loadEnv(): AppEnv {
     port: optionalInt('PORT', 3000),
     nodeEnv: process.env.NODE_ENV ?? 'development',
     sendgridApiKey: requireEnv('SENDGRID_API_KEY'),
-    awsRegion: requireEnv('AWS_REGION'),
+    awsRegion: process.env.AWS_REGION,
     brevoApiKey: requireEnv('BREVO_API_KEY'),
     databaseUrl: requireEnv('DATABASE_URL'),
     dbPoolMax: optionalInt('DB_POOL_MAX', 10),
